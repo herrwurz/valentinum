@@ -1,0 +1,40 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# local environment files
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# testing
+/coverage
+/playwright-report
+/test-results
+
+# prisma
+/prisma/dev.db
+/prisma/dev.db-journal
+/src/generated/prisma/
+
+# local docker client configuration
+/.docker/
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
