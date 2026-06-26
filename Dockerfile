@@ -30,6 +30,7 @@ RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
 
 # Prisma CLI + migration engine + migrations for startup migrate deploy
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
