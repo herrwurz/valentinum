@@ -7,4 +7,6 @@ if (!password) {
   process.exit(1);
 }
 
-console.log(Buffer.from(await hash(password, 12)).toString("base64"));
+(async () => {
+  console.log(Buffer.from(await hash(password, 12)).toString("base64"));
+})();
