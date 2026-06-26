@@ -13,6 +13,7 @@ function Submit() {
 interface BookingOptions {
   rooms: Array<{ id: string; name: string }>;
   equipment: Array<{ id: string; name: string }>;
+  vehicles: Array<{ id: string; name: string }>;
   groups: Array<{ id: string; name: string; members: Array<{ name: string }> }>;
 }
 
@@ -27,6 +28,7 @@ export function BookingRequestForm({ options }: { options: BookingOptions }) {
         {options.groups.map((group) => <label key={group.id} className="checkbox-field"><input type="radio" name="roomSelection" value={`group:${group.id}`} />{group.name}<small>{group.members.map((member) => member.name).join(", ")}</small></label>)}
       </fieldset>
       {options.equipment.length > 0 ? <fieldset className="field-wide resource-selection"><legend>Zusätzliche Ausstattung</legend>{options.equipment.map((resource) => <label key={resource.id} className="checkbox-field"><input type="checkbox" name="equipmentIds" value={resource.id} />{resource.name}</label>)}</fieldset> : null}
+      {options.vehicles.length > 0 ? <fieldset className="field-wide resource-selection"><legend>Kühlwagen</legend>{options.vehicles.map((resource) => <label key={resource.id} className="checkbox-field"><input type="checkbox" name="equipmentIds" value={resource.id} />{resource.name}</label>)}</fieldset> : null}
       <label>Beginn<input name="startAt" type="datetime-local" required /></label>
       <label>Ende<input name="endAt" type="datetime-local" required /></label>
       <label>Name<input name="requesterName" required maxLength={160} autoComplete="name" /></label>

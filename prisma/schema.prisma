@@ -42,6 +42,20 @@ enum EventCategory {
   SONSTIGE
 }
 
+enum FeeType {
+  DEPOSIT
+  RENTAL
+  CLEANING
+  DAMAGE
+  OTHER
+}
+
+enum DamageSeverity {
+  MINOR
+  MODERATE
+  SEVERE
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String?
@@ -56,6 +70,9 @@ model User {
   bookingsCreated Booking[]              @relation("BookingCreatedBy")
   bookingsUpdated Booking[]              @relation("BookingUpdatedBy")
   statusChanges   BookingStatusHistory[]
+
+  handoverProtocols VehicleHandoverProtocol[] @relation("HandoverCreatedBy")
+  returnProtocols   VehicleReturnProtocol[]   @relation("ReturnCreatedBy")
 }
 
 model Resource {
@@ -126,6 +143,10 @@ model Booking {
   resources BookingResource[]
   history   BookingStatusHistory[]
   event     Event?
+
+  handoverProtocol VehicleHandoverProtocol?
+  returnProtocol   VehicleReturnProtocol?
+  fees             Fee[]
 
   @@index([status, startAt, endAt])
 }
@@ -210,4 +231,70 @@ model AuditLog {
   user User? @relation(fields: [userId], references: [id])
 
   @@index([entityType, entityId, createdAt])
+}
+
+model VehicleHandoverProtocol {
+  id             String   @id @default(cuid())
+  bookingId      String   @unique
+  handedOverAt   DateTime
+  pickupLocation String
+  odometer       Int?
+  fuelLevel      Int?
+  condition      String
+  accessories    String?
+  depositAmount  Decimal?
+  notes          String?
+  createdById    String?
+  createdAt      DateTime @default(now())
+
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  createdBy User?   @relation("HandoverCreatedBy", fields: [createdById], references: [id])
+}
+
+model VehicleReturnProtocol {
+  id             String   @id @default(cuid())
+  bookingId      String   @unique
+  returnedAt     DateTime
+  returnLocation String
+  odometer       Int?
+  fuelLevel      Int?
+  cleaningOk     Boolean  @default(true)
+  condition      String
+  notes          String?
+  createdById    String?
+  createdAt      DateTime @default(now())
+
+  booking   Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  createdBy User?          @relation("ReturnCreatedBy", fields: [createdById], references: [id])
+  damages   DamageReport[]
+  fees      Fee[]
+}
+
+model DamageReport {
+  id               String         @id @default(cuid())
+  returnProtocolId String
+  description      String
+  severity         DamageSeverity @default(MINOR)
+  estimatedCost    Decimal?
+  createdAt        DateTime       @default(now())
+
+  returnProtocol VehicleReturnProtocol @relation(fields: [returnProtocolId], references: [id], onDelete: Cascade)
+
+  @@index([returnProtocolId])
+}
+
+model Fee {
+  id               String   @id @default(cuid())
+  bookingId        String
+  returnProtocolId String?
+  type             FeeType
+  amount           Decimal
+  note             String?
+  createdAt        DateTime @default(now())
+
+  booking        Booking                @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  returnProtocol VehicleReturnProtocol? @relation(fields: [returnProtocolId], references: [id], onDelete: SetNull)
+
+  @@index([bookingId])
+  @@index([returnProtocolId])
 }

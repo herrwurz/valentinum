@@ -25,6 +25,7 @@ export class BookingService {
     return {
       rooms: resources.filter((resource) => resource.type === "ROOM"),
       equipment: resources.filter((resource) => resource.type === "EQUIPMENT"),
+      vehicles: resources.filter((resource) => resource.type === "VEHICLE"),
       groups,
     };
   }
@@ -53,9 +54,6 @@ export class BookingService {
       if (resources.length !== uniqueResourceIds.length) throw new ValidationError("Mindestens eine Ressource wurde nicht gefunden.");
       if (resources.some((resource) => !resource.active || !resource.publicVisible)) {
         throw new BusinessRuleError("Mindestens eine Ressource ist nicht buchbar.");
-      }
-      if (resources.some((resource) => resource.type === "VEHICLE")) {
-        throw new BusinessRuleError("Kühlwagen-Anfragen werden mit dem Kühlwagen-Prozess in Phase 8 freigeschaltet.");
       }
       const directResources = resources.filter((resource) => directResourceIds.includes(resource.id));
       if (input.resourceGroupId && directResources.some((resource) => resource.type === "ROOM")) {

@@ -59,7 +59,7 @@ export class PrismaBookingRepository implements BookingRepository {
 
   listRequestableResources() {
     return prisma.resource.findMany({
-      where: { active: true, publicVisible: true, type: { in: ["ROOM", "EQUIPMENT"] } },
+      where: { active: true, publicVisible: true, type: { in: ["ROOM", "EQUIPMENT", "VEHICLE"] } },
       select: { id: true, name: true, type: true }, orderBy: { name: "asc" },
     });
   }
