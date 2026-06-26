@@ -17,6 +17,12 @@ export default async function AdminPage() {
         <span className="status-pill"><i aria-hidden="true" /> System bereit</span>
       </section>
       <section className="admin-card-grid">
+        {session?.user.role === "ADMIN" ? <Link className="admin-card" href="/admin/benutzer">
+          <span className="feature-number">Verwaltung</span>
+          <h2>Benutzer</h2>
+          <p>Konten für Mitarbeiter und Administratoren anlegen und verwalten.</p>
+          <strong>Öffnen →</strong>
+        </Link> : null}
         <Link className="admin-card" href="/admin/kalender">
           <span className="feature-number">Phase 4</span>
           <h2>Kalender</h2>
