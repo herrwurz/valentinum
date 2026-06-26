@@ -22,6 +22,7 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
             <Link href="/admin/kalender">Kalender</Link>
             <Link href="/admin/anfragen">Anfragen</Link>
             <Link href="/admin/kuehlwagen">Kühlwagen</Link>
+            {session.user.role === "ADMIN" ? <Link href="/admin/benutzer">Benutzer</Link> : null}
             <Link href="/admin/veranstaltungen">Veranstaltungen</Link>
             {session.user.role === "ADMIN" ? <Link href="/admin/ressourcen">Ressourcen</Link> : null}
             {session.user.role === "ADMIN" ? <Link href="/admin/raumkombinationen">Raumkombinationen</Link> : null}
