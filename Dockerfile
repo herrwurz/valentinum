@@ -24,7 +24,7 @@ ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 WORKDIR /app
 
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl libc6-compat
 
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
