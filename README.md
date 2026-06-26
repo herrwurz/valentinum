@@ -45,6 +45,9 @@ npm run test:phase3
 npm run test:phase4
 npm run test:phase5
 npm run test:phase6
+npm run test:phase7
+npm run test:phase8
+npm run test:phase9
 npm run build
 ```
 
@@ -85,7 +88,19 @@ Im Admin-Kalender können STAFF und ADMIN Buchungen stornieren oder als abgeschl
 
 Unter `/anfrage` können öffentliche Besucher und angemeldete Benutzer eine unverbindliche Anfrage für öffentlich buchbare Räume und Ausstattung stellen. Die Anfrage erhält immer `REQUESTED`; eine automatische Genehmigung findet nicht statt. Unter `/admin/anfragen` können STAFF und ADMIN offene Anfragen prüfen, konfliktgesichert genehmigen oder mit Pflichtgrund ablehnen.
 
-Kühlwagen-Anfragen werden bewusst erst mit dem spezialisierten Kühlwagen-Prozess in Phase 8 freigeschaltet, da dort die zwingenden Abhol-/Rückgabezeiten und -orte fachlich modelliert werden.
+## Kühlwagen-Verleihprozess
+
+Phase 8 schaltet die Kühlwagen-Buchung frei: Der Kühlwagen ist unter `/anfrage` als buchbare Ressource auswählbar und durchläuft den regulären Genehmigungsprozess. Unter `/admin/kuehlwagen` erfassen STAFF und ADMIN das Übergabeprotokoll (Abholort, Übergabezeit, Kilometerstand, Tankfüllung, Zustand, Zubehör, Kaution) und das Rückgabeprotokoll (Rückgabeort, Rückgabezeit, Reinigung, Zustand, Schäden, Gebühren).
+
+Ein Übergabeprotokoll ist nur für genehmigte Buchungen möglich, eine Rückgabe setzt eine erfolgte Übergabe voraus und darf nicht davor liegen. Kaution und Mietgebühr sind konfigurierbar; die Kaution wird bei der Übergabe automatisch als Gebühr vom Typ `DEPOSIT` verbucht. Alle Protokolle werden serverseitig validiert, rollenbasiert autorisiert, transaktional gespeichert und auditiert. Kautionen, Gebühren, Schäden und Protokolldaten bleiben ausschließlich den geschützten Verwaltungsansichten vorbehalten.
+
+Das Datenmodell wurde erweitert; vor dem Start ist `npm run db:migrate -- --name phase-8-kuehlwagen-prozess` auszuführen.
+
+## Dokumente & Export
+
+Phase 9 erzeugt Dokumente und Exporte für STAFF und ADMIN. Unter `/admin/kuehlwagen` stehen je Buchung Downloads für die Buchungsbestätigung sowie das Übergabe- und Rückgabeprotokoll als PDF bereit. Unter `/admin/export` lässt sich ein CSV-Export der Buchungen über Zeitraum und Status erzeugen (Semikolon-getrennt mit UTF-8-BOM, direkt in Excel öffenbar).
+
+Die PDFs werden mit `pdf-lib` serverseitig gerendert; die Downloads laufen über rollen­geprüfte Node-Route-Handler unter `/api/documents/*` und `/api/exports/bookings`. Es werden ausschließlich lesende Ableitungen bestehender Daten erzeugt. Für die neue Abhängigkeit ist einmalig `npm install` auszuführen.
 
 ## Valentinum-Raumkombinationen
 
@@ -114,4 +129,6 @@ Ergänzende Projektdokumente:
 - [Abschlussdokumentation Phase 4](docs/phase-4.md)
 - [Abschlussdokumentation Phase 5](docs/phase-5.md)
 - [Abschlussdokumentation Phase 6](docs/phase-6.md)
+- [Abschlussdokumentation Phase 8](docs/phase-8.md)
+- [Abschlussdokumentation Phase 9](docs/phase-9.md)
 - [Stabilisierungspaket Juni 2026](docs/stabilization-2026-06.md)
