@@ -12,13 +12,21 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const { callbackUrl } = await searchParams;
 
   return (
-    <div className="login-shell">
-      <section className="login-card">
-        <div className="eyebrow">Sicherer Bereich</div>
-        <h1>Verwaltung</h1>
-        <p>Melden Sie sich mit Ihrem Administratorkonto an.</p>
-        <LoginForm callbackUrl={callbackUrl} />
-      </section>
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-brand">
+          <img src="/valentinum-logo.png" alt="Valentinum" className="auth-logo" />
+          <p className="auth-brand-sub">Buchungsplattform</p>
+          <p className="auth-brand-desc">Verwaltungsportal für Räume, Kühlwagen und Veranstaltungen.</p>
+        </div>
+        <div className="auth-card">
+          <p className="auth-eyebrow">Login</p>
+          <h1 className="auth-title">Anmeldung</h1>
+          <p className="auth-hint">Melden Sie sich mit Ihrer E-Mail-Adresse und Ihrem Passwort an.</p>
+          <LoginForm callbackUrl={callbackUrl} />
+          <p className="auth-note">Nach der Anmeldung werden Sie automatisch in den passenden Bereich weitergeleitet.</p>
+        </div>
+      </div>
     </div>
   );
 }
