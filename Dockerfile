@@ -13,6 +13,7 @@ RUN npm ci
 FROM base AS builder
 RUN apk add --no-cache libc6-compat openssl
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/src/generated ./src/generated
 COPY . .
 RUN npm run build
 
