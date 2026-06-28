@@ -20,6 +20,12 @@ const repository = (overrides: Partial<BookingRepository> = {}): BookingReposito
   rejectAtomically: vi.fn(),
   cancelAtomically: vi.fn(),
   completeAtomically: vi.fn(),
+  listForAdmin: vi.fn(),
+  getDetailForAdmin: vi.fn(),
+  createAdminBookingAtomically: vi.fn(),
+  listForUser: vi.fn(),
+  getDetailForUser: vi.fn(),
+  getDashboardStats: vi.fn(),
   ...overrides,
 });
 

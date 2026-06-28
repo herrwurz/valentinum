@@ -1,7 +1,7 @@
 import type { Actor } from "@/lib/permissions/roles";
 import { requireStaffOrAdmin } from "@/lib/permissions/roles";
 import { ConflictError, BusinessRuleError, ValidationError, NotFoundError, PermissionError } from "@/server/errors";
-import type { BookingRequestInput, BookingStatusValue } from "@/features/bookings/booking-types";
+import type { AdminBookingInput, BookingRequestInput, BookingStatusValue } from "@/features/bookings/booking-types";
 import type { BookingRepository } from "@/server/repositories/booking-repository";
 import { checkBookingConflicts } from "@/server/services/booking-conflicts";
 import { assertStatusTransition } from "@/server/services/booking-status";
@@ -147,5 +147,58 @@ export class BookingService {
     }
 
     throw new BusinessRuleError("Diese Buchung kann derzeit nicht storniert werden.");
+  }
+
+  async listForAdmin(actor: Actor, filter?: { status?: BookingStatusValue }) {
+    requireStaffOrAdmin(actor);
+    return this.repository.listForAdmin(filter as { status?: import("@/generated/prisma/client").BookingStatus });
+  }
+
+  async getForAdmin(actor: Actor, id: string) {
+    requireStaffOrAdmin(actor);
+    const booking = await this.repository.getDetailForAdmin(id);
+    if (!booking) throw new NotFoundError("Buchung wurde nicht gefunden.");
+    return booking;
+  }
+
+  async createAdminBooking(actor: Actor, input: AdminBookingInput): Promise<string> {
+    requireStaffOrAdmin(actor);
+    if (!(input.startAt < input.endAt)) throw new ValidationError("Beginn muss vor dem Ende liegen.");
+    if (input.resourceIds.length === 0) throw new ValidationError("Mindestens eine Ressource ist erforderlich.");
+
+    return this.repository.createAdminBookingAtomically(input, actor.id, (context) => {
+      if (context.booking.resources.length !== input.resourceIds.length) {
+        throw new ValidationError("Mindestens eine Ressource wurde nicht gefunden.");
+      }
+      if (context.booking.resources.some((r) => !r.active)) {
+        throw new BusinessRuleError("Mindestens eine Ressource ist inaktiv.");
+      }
+      const conflicts = checkBookingConflicts({
+        startAt: input.startAt,
+        endAt: input.endAt,
+        resources: context.booking.resources,
+        bookings: context.bookings,
+        blackouts: context.blackouts,
+        optionBlocks: this.optionBlocks,
+      });
+      if (conflicts.length > 0) {
+        throw new ConflictError(`Zeitraumkonflikt: ${conflicts.map((c) => c.title).join(", ")}`);
+      }
+    });
+  }
+
+  async listForUser(actor: Actor) {
+    return this.repository.listForUser(actor.id);
+  }
+
+  async getForUser(actor: Actor, id: string) {
+    const booking = await this.repository.getDetailForUser(id, actor.id);
+    if (!booking) throw new NotFoundError("Buchung wurde nicht gefunden.");
+    return booking;
+  }
+
+  async getDashboardStats(actor: Actor) {
+    requireStaffOrAdmin(actor);
+    return this.repository.getDashboardStats();
   }
 }

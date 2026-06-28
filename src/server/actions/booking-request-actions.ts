@@ -7,6 +7,7 @@ import { getCurrentActor, getOptionalActor } from "@/lib/auth/session";
 import { parseBookingRequestFormData } from "@/lib/validation/booking-request";
 import { BusinessRuleError, ConflictError, PermissionError, ValidationError } from "@/server/errors";
 import { bookingService } from "@/server/services/booking-service-instance";
+import { parseViennaDateTime } from "@/lib/time/vienna";
 
 export interface BookingRequestActionState { error?: string; success?: string }
 
@@ -37,6 +38,50 @@ export async function approveBookingAction(formData: FormData): Promise<void> {
   }
   revalidatePath("/admin/anfragen");
   redirect(errorMessage ? `/admin/anfragen?error=${encodeURIComponent(errorMessage)}` : "/admin/anfragen?success=genehmigt");
+}
+
+export async function createAdminBookingAction(
+  _state: BookingRequestActionState,
+  formData: FormData,
+): Promise<BookingRequestActionState> {
+  try {
+    const title = formData.get("title");
+    const startAt = formData.get("startAt");
+    const endAt = formData.get("endAt");
+    const requesterName = formData.get("requesterName");
+    const requesterEmail = formData.get("requesterEmail");
+    const requesterPhone = formData.get("requesterPhone");
+    const purpose = formData.get("purpose");
+    const resourceIds = formData.getAll("resourceId").filter((v): v is string => typeof v === "string" && v.length > 0);
+
+    if (typeof title !== "string" || !title.trim()) return { error: "Titel ist erforderlich." };
+    if (typeof startAt !== "string" || typeof endAt !== "string") return { error: "Zeitraum ist ungültig." };
+    if (typeof requesterName !== "string" || !requesterName.trim()) return { error: "Name ist erforderlich." };
+    if (typeof requesterEmail !== "string" || !requesterEmail.trim()) return { error: "E-Mail ist erforderlich." };
+    if (resourceIds.length === 0) return { error: "Mindestens eine Ressource ist erforderlich." };
+
+    const start = parseViennaDateTime(startAt);
+    const end = parseViennaDateTime(endAt);
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) return { error: "Ungültiges Datum." };
+
+    await bookingService.createAdminBooking(await getCurrentActor(), {
+      title: title.trim(),
+      startAt: start,
+      endAt: end,
+      requesterName: requesterName.trim(),
+      requesterEmail: requesterEmail.trim(),
+      requesterPhone: typeof requesterPhone === "string" && requesterPhone.trim() ? requesterPhone.trim() : undefined,
+      purpose: typeof purpose === "string" && purpose.trim() ? purpose.trim() : undefined,
+      resourceIds,
+    });
+    revalidatePath("/admin/buchungen");
+    revalidatePath("/admin/kuehlwagen");
+    revalidatePath("/admin/kalender");
+    return { success: "Buchung wurde angelegt und genehmigt." };
+  } catch (error) {
+    if (error instanceof Error) return { error: error.message };
+    return { error: "Die Buchung konnte nicht gespeichert werden." };
+  }
 }
 
 export async function rejectBookingAction(formData: FormData): Promise<void> {

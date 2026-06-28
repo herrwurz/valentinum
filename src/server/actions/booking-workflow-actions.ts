@@ -11,8 +11,11 @@ function revalidateBookingPaths(scope: "admin" | "user") {
   if (scope === "admin") {
     revalidatePath("/admin/kalender");
     revalidatePath("/admin/anfragen");
+    revalidatePath("/admin/buchungen");
+    revalidatePath("/admin/kuehlwagen");
   } else {
     revalidatePath("/mein-bereich/kalender");
+    revalidatePath("/mein-bereich/buchungen");
   }
 }
 

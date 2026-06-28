@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getCurrentActor } from "@/lib/auth/session";
 import { damageSeverities, damageSeverityLabels, feeTypeLabels, feeTypes } from "@/features/vehicle/vehicle-types";
 import { createHandoverProtocolAction, createReturnProtocolAction } from "@/server/actions/vehicle-protocol-actions";
@@ -91,6 +92,7 @@ export default async function KuehlwagenPage({ searchParams }: { searchParams: P
           <h1>Kühlwagen-Prozess</h1>
           <p>{bookings.length} genehmigte oder abgeschlossene Kühlwagen-Buchungen</p>
         </div>
+        <Link className="button button-primary" href="/admin/kuehlwagen/neu">+ Neue Buchung</Link>
       </section>
       {notice.error ? <p className="form-error">{notice.error}</p> : null}
       {notice.success ? <p className="form-success">{noticeText[notice.success] ?? "Vorgang gespeichert."}</p> : null}

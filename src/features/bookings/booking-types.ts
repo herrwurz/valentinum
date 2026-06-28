@@ -53,3 +53,61 @@ export interface RequestedBookingDto extends BookingRequestInput {
   resourceNames: string[];
   createdAt: Date;
 }
+
+export interface AdminBookingListItem {
+  id: string;
+  title: string;
+  status: BookingStatusValue;
+  startAt: Date;
+  endAt: Date;
+  requesterName: string;
+  requesterEmail: string;
+  createdAt: Date;
+  resourceNames: string[];
+  resourceTypes: string[];
+}
+
+export interface HistoryEntry {
+  id: string;
+  fromStatus?: BookingStatusValue;
+  toStatus: BookingStatusValue;
+  reason?: string;
+  changedAt: Date;
+  changedByEmail?: string;
+}
+
+export interface AdminBookingDetail extends AdminBookingListItem {
+  requesterPhone?: string;
+  purpose?: string;
+  locationText?: string;
+  internalNote?: string;
+  resources: Array<{ id: string; name: string; type: string }>;
+  history: HistoryEntry[];
+}
+
+export interface UserBookingListItem {
+  id: string;
+  title: string;
+  status: BookingStatusValue;
+  startAt: Date;
+  endAt: Date;
+  resourceNames: string[];
+  createdAt: Date;
+}
+
+export interface AdminBookingInput {
+  title: string;
+  startAt: Date;
+  endAt: Date;
+  requesterName: string;
+  requesterEmail: string;
+  requesterPhone?: string;
+  purpose?: string;
+  resourceIds: string[];
+}
+
+export interface DashboardStats {
+  requestedCount: number;
+  vehicleActiveCount: number;
+  upcomingApprovedCount: number;
+}
