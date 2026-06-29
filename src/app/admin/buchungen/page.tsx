@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { bookingStatuses } from "@/features/bookings/booking-types";
+import { StatusFilterSelect } from "@/features/bookings/status-filter-select";
 import { getCurrentActor } from "@/lib/auth/session";
 import { bookingService } from "@/server/services/booking-service-instance";
 import type { BookingStatus } from "@/generated/prisma/client";
@@ -33,17 +34,10 @@ export default async function BookingsPage({ searchParams }: { searchParams: Pro
           <h1>Alle Buchungen</h1>
           <p>{list.length} Buchungen</p>
         </div>
-        <Link className="button button-primary" href="/admin/kuehlwagen/neu">+ Kühlwagen buchen</Link>
+
       </section>
 
-      <nav className="filter-tabs" aria-label="Status-Filter">
-        <Link href="/admin/buchungen" className={!validStatus ? "filter-tab active" : "filter-tab"}>Alle</Link>
-        {bookingStatuses.map((s) => (
-          <Link key={s} href={`/admin/buchungen?status=${s}`} className={validStatus === s ? "filter-tab active" : "filter-tab"}>
-            {statusLabels[s]}
-          </Link>
-        ))}
-      </nav>
+      <StatusFilterSelect current={validStatus} />
 
       <section className="resource-table-wrap">
         <table className="resource-table">

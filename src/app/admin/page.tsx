@@ -38,14 +38,14 @@ export default async function AdminPage() {
         </Link>
 
         <Link className="admin-card highlight" href="/admin/anfragen">
-          <span className="feature-number">{stats.requestedCount > 0 ? `${stats.requestedCount} offen` : "Keine offen"}</span>
+          <span className="feature-number">{stats.requestedCount} offen</span>
           <h2>Offene Anfragen</h2>
           <p>Neue Buchungsanfragen genehmigen oder ablehnen.</p>
           <strong>Öffnen →</strong>
         </Link>
 
         <Link className="admin-card" href="/admin/kuehlwagen">
-          <span className="feature-number">{stats.vehicleActiveCount > 0 ? `${stats.vehicleActiveCount} aktiv` : "Kein aktiver Verleih"}</span>
+          <span className="feature-number">{stats.vehicleActiveCount} aktiv</span>
           <h2>Kühlwagen</h2>
           <p>Übergabe- und Rückgabeprotokolle für aktive Verleihvorgänge.</p>
           <strong>Öffnen →</strong>

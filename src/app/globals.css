@@ -294,6 +294,9 @@ footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 12px
 .admin-card strong { color: var(--green); font-size: 13px; }
 
 .resource-table-wrap { overflow-x: auto; background: var(--paper); border: 1px solid var(--line); border-radius: 7px; }
+.filter-select-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.filter-select-label { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.filter-select { border: 1px solid var(--line); border-radius: 6px; padding: 7px 12px; font-size: 13px; background: var(--paper); color: var(--ink); cursor: pointer; min-width: 180px; }
 .resource-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .resource-table th { color: var(--muted); font-size: 10px; letter-spacing: .12em; text-align: left; text-transform: uppercase; }
 .resource-table th,

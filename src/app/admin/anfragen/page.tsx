@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { getCurrentActor } from "@/lib/auth/session";
 import { approveBookingAction, rejectBookingAction } from "@/server/actions/booking-request-actions";
 import { bookingService } from "@/server/services/booking-service-instance";
@@ -8,7 +10,7 @@ const formatter = new Intl.DateTimeFormat("de-AT", { dateStyle: "medium", timeSt
 export default async function RequestsPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
   const requests = await bookingService.listRequested(await getCurrentActor());
   const notice = await searchParams;
-  return <div className="admin-content"><section className="admin-heading compact-heading"><div><div className="eyebrow">Buchungsverwaltung</div><h1>Offene Anfragen</h1><p>{requests.length} warten auf Bearbeitung</p></div></section>
+  return <div className="admin-content"><section className="admin-heading compact-heading"><div><div className="eyebrow">Buchungsverwaltung</div><h1>Offene Anfragen</h1><p>{requests.length} warten auf Bearbeitung</p></div><Link className="button button-primary" href="/anfrage">+ Buchung anfragen</Link></section>
     {notice.error ? <p className="form-error">{notice.error}</p> : null}
     {notice.success ? <p className="form-success">Anfrage wurde {notice.success}.</p> : null}
     <div className="request-list">{requests.map((request) => <article className="request-card" key={request.id}>
